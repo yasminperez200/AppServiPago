@@ -2,22 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    //alias(libs.plugins.google.services)
-}
-
-// Firebase (base de datos remota): el plugin de Google Services solo se activa
-// cuando existe app/google-services.json (el archivo que descargas de la consola
-// de Firebase). Sin ese archivo la app compila y funciona igual, pero solo con
-// la base de datos local (Room) y sin subir nada a la nube.
-if (file("google-services.json").exists()) {
-    apply(plugin = "com.google.gms.google-services")
+    alias(libs.plugins.google.services)
 }
 
 android {
     namespace = "com.example.app_recibos"
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.app_recibos"
@@ -31,15 +21,19 @@ android {
 
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
     }
@@ -60,19 +54,18 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui)
 
-    // Room (base de datos local) - requisito del microproyecto
+    // Room (base de datos local)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // ViewModel para Jetpack Compose - requisito del microproyecto
+    // ViewModel para Jetpack Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Íconos extendidos de Material (usados en Pagos, Ajustes, Perfil, Creditos)
+    // Íconos extendidos de Material
     implementation(libs.androidx.compose.material.icons.extended)
 
-    // Firebase (conexión a un servicio en línea) - ver README_TALLER.md
-    // para los pasos que faltan (google-services.json) antes de usarlo.
+    // Firebase (conexión en línea)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
 

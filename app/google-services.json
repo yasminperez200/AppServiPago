@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "506311095731",
+    "project_id": "servipago-8ddcf",
+    "storage_bucket": "servipago-8ddcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506311095731:android:2270a86c1b05ebfe4ec7c6",
+        "android_client_info": {
+          "package_name": "com.example.app_recibos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_uQdjWKE7c9stba21J89_Crt_l9RsLXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
-                // 💡 Surface asegura que la app tenga un fondo definido (blanco o el del tema)
+                // Surface asegura que la app tenga un fondo definido (blanco o el del tema)
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

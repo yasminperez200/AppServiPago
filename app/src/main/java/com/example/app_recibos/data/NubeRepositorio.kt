@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
  *
  * Room sigue siendo la base de datos local del teléfono y es la que usa la
  * interfaz. Cada vez que se guarda algo en Room, los ViewModels también lo
- * suben aquí, a las colecciones "servicios" y "pagos" de Firestore.
+ * suben aquí, a las colecciones "servicios", "pagos" y "usuarios" de Firestore.
  *
  * Si Firebase todavía no está configurado (falta app/google-services.json),
  * estas funciones no hacen nada y la app sigue funcionando solo con Room.
@@ -65,5 +65,16 @@ object NubeRepositorio {
         db.collection("pagos").add(datos)
             .addOnSuccessListener { Log.d(TAG, "Pago subido a Firestore: ${it.id}") }
             .addOnFailureListener { Log.e(TAG, "Error subiendo el pago a Firestore", it) }
+    }
+
+    /** Sube o actualiza un usuario en la colección "usuarios". */
+    fun subirUsuario(context: Context, usuarioId: String, datosUsuario: Map<String, Any>) {
+        val db = firestore(context) ?: run {
+            Log.w(TAG, "Firebase no está configurado: el usuario solo quedó en Room")
+            return
+        }
+        db.collection("usuarios").document(usuarioId).set(datosUsuario)
+            .addOnSuccessListener { Log.d(TAG, "Usuario subido a Firestore correctamente: $usuarioId") }
+            .addOnFailureListener { Log.e(TAG, "Error subiendo el usuario a Firestore", it) }
     }
 }

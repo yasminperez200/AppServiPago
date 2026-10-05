@@ -79,7 +79,7 @@ fun MisServicios(
                             contentDescription = "Buscar",
                             modifier = Modifier.size(18.dp)
                         )
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Spacer(modifier = Modifier.width(20.dp))
                         Text(
                             text = "Buscar servicio o convenio...",
                             color = Color.Gray,
@@ -122,10 +122,7 @@ fun MisServicios(
                                 else -> "Vence en $diasRestantes días"
                             }
 
-                            // Lógica de colores del botón según los rangos pedidos:
-                            // Menos de 8 días -> Rojo
-                            // De 9 a 18 días -> Naranja
-                            // 19 días en adelante -> Verde
+                            // Lógica de colores del botón según los rangos
                             val (colorEstado, textoEstadoBoton) = when {
                                 diasRestantes < 8 -> Pair(Color(0xFFE53935), "¡Pagar Ya!")
                                 diasRestantes in 8..18 -> Pair(Color(0xFFFF9800), "Próximo")
@@ -134,48 +131,27 @@ fun MisServicios(
 
                             // Selección de icono y color de fondo del círculo según el tipo o nombre del servicio
                             val (iconoRes, colorFondoIcono) = when {
-                                // Claro (Internet / Telefonía)
                                 servicio.nombre.contains("Claro", ignoreCase = true) || servicio.tipo.contains("Claro", ignoreCase = true) ->
-                                    Pair(R.drawable.wifi_logo, Color(0xFF7C4DFF)) // Morado para Claro
-
-                                // Luz / Electricidad
+                                    Pair(R.drawable.wifi_logo, Color(0xFF000000))
                                 servicio.tipo.contains("Luz", ignoreCase = true) || servicio.nombre.contains("CEO", ignoreCase = true) ->
-                                    Pair(R.drawable.luz_logo, Color(0xFFF6C453)) // Amarillo para electricidad
-
-                                // Agua
+                                    Pair(R.drawable.luz_logo, Color(0xFF000000))
                                 servicio.tipo.contains("Agua", ignoreCase = true) || servicio.nombre.contains("Agua", ignoreCase = true) || servicio.nombre.contains("Gotica", ignoreCase = true) ->
-                                    Pair(R.drawable.agua_logo, Color(0xFF00BCD4)) // Celeste para agua
-
-                                // Gas
+                                    Pair(R.drawable.agua_logo, Color(0xFF000000))
                                 servicio.tipo.contains("Gas", ignoreCase = true) ->
-                                    Pair(R.drawable.fuego_logo, Color(0xFFFF5722)) // Naranja/Rojo para gas
-
-                                // Netflix (Entretenimiento)
+                                    Pair(R.drawable.fuego_logo, Color(0xFF000000))
                                 servicio.nombre.contains("Netflix", ignoreCase = true) ->
-                                    Pair(R.drawable.netflix_logo, Color(0xFFE50914)) // Rojo para Netflix
-
-                                // Amazon Prime (Entretenimiento)
+                                    Pair(R.drawable.netflix_logo, Color(0xFF000000))
                                 servicio.nombre.contains("Amazon", ignoreCase = true) || servicio.nombre.contains("Prime", ignoreCase = true) ->
-                                    Pair(R.drawable.primevideo_logo, Color(0xFF00A8E1)) // Azul para Amazon Prime
-
-                                // Disney+ (Entretenimiento)
+                                    Pair(R.drawable.primevideo_logo, Color(0xFFFFFFFF))
                                 servicio.nombre.contains("Disney", ignoreCase = true) ->
-                                    Pair(R.drawable.disneyplus_logo, Color(0xFF113CCF)) // Azul oscuro para Disney+
-
-                                // Max (Entretenimiento)
+                                    Pair(R.drawable.disneyplus_logo, Color(0xFF040714))
                                 servicio.nombre.contains("Max", ignoreCase = true) ->
-                                    Pair(R.drawable.hbomax_logo, Color(0xFF002BE7)) // Azul para Max
-
-                                // Spotify (Entretenimiento)
+                                    Pair(R.drawable.hbomax_logo, Color(0xFFFFFFFF))
                                 servicio.nombre.contains("Spotify", ignoreCase = true) ->
-                                    Pair(R.drawable.spotify_logo, Color(0xFF1DB954)) // Verde para Spotify
-
-                                // Crunchyroll (Entretenimiento)
+                                    Pair(R.drawable.spotify_logo, Color(0xFF000000))
                                 servicio.nombre.contains("Crunchyroll", ignoreCase = true) ->
-                                    Pair(R.drawable.crunchyroll_logo, Color(0xFFF47521)) // Naranja para Crunchyroll
-
-                                // Por defecto (WiFi genérico)
-                                else -> Pair(R.drawable.wifi_logo, Color(0xFF7C4DFF))
+                                    Pair(R.drawable.crunchyroll_logo, Color(0xFFFFFFFF))
+                                else -> Pair(R.drawable.wifi_logo, Color(0xFF000000))
                             }
 
                             ItemServicioCard(
@@ -187,7 +163,15 @@ fun MisServicios(
                                 colorEstadoBadge = colorEstado,
                                 textoBadge = textoEstadoBoton,
                                 onPagarClick = {
-                                    // Acción al presionar pagar
+                                    // 1. Registra el pago en la base de datos (aumenta el contador y aparece en historial)
+                                    pagosViewModel.registrarPago(
+                                        servicio = servicio.nombre,
+                                        monto = formatoMoneda.format(servicio.monto)
+                                    )
+                                    // 2. Elimina el servicio de los pendientes (resta el total pendiente)
+                                    serviciosViewModel.eliminarServicio(servicio)
+                                    // 3. Navega a la pantalla de pagos
+                                    accionPagos()
                                 }
                             )
                         }
@@ -254,13 +238,13 @@ private fun ItemServicioCard(
                     modifier = Modifier
                         .size(38.dp)
                         .clip(CircleShape)
-                        .background(colorFondoIcono), // Fondo dinámico según el servicio
+                        .background(colorFondoIcono),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painter = painterResource(id = icono),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
@@ -304,12 +288,12 @@ private fun ItemServicioCard(
                 Text(text = montoTexto, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
-            // Botón secundario "Pagar" inferior
+            // Botón "Pagar" inferior
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
                     .background(Color.White)
-                    .clickable { }
+                    .clickable(onClick = onPagarClick)
                     .padding(horizontal = 24.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center
             ) {

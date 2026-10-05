@@ -317,7 +317,6 @@ fun CrearCuenta(
                                     email = email.trim(),
                                     password = contrasena
                                 )
-                                // Llamada correcta a registrarUsuario según tu DAO
                                 database.usuarioDao().registrarUsuario(nuevoUsuario)
                                 accionRegistroExitoso()
                             } catch (e: Exception) {

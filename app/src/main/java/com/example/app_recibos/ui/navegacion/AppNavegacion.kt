@@ -62,7 +62,7 @@ fun AppNavegacion(modifier: Modifier = Modifier, snackbarHostState: SnackbarHost
         composable(route = Pantallas.CrearCuenta.name) {
             CrearCuenta(
                 accionIniciarSesion = { navController.navigate(Pantallas.IniciarSesion.name) },
-                accion = {
+                accionRegistroExitoso = {
                     navController.navigate(Pantallas.Bienvenida.name) {
                         popUpTo(Pantallas.Bienvenida.name) { inclusive = true }
                     }
@@ -119,7 +119,7 @@ fun AppNavegacion(modifier: Modifier = Modifier, snackbarHostState: SnackbarHost
                         popUpTo(0)
                     }
                 },
-                accionAcercaDe = { navController.navigate(Pantallas.Creditos.name) }
+                onIrACreditos = { navController.navigate(Pantallas.Creditos.name) }
             )
         }
 
