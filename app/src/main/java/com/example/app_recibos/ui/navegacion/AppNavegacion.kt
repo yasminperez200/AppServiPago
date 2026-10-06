@@ -119,7 +119,7 @@ fun AppNavegacion(modifier: Modifier = Modifier, snackbarHostState: SnackbarHost
                         popUpTo(0)
                     }
                 },
-                onIrACreditos = { navController.navigate(Pantallas.Creditos.name) }
+                accionAcercaDe = { navController.navigate(Pantallas.Creditos.name) }
             )
         }
 

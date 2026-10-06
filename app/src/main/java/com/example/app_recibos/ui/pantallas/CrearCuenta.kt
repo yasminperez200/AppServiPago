@@ -359,7 +359,7 @@ fun CrearCuenta(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
+
 @Composable
 fun CrearCuentaPreview() {
     CrearCuenta()

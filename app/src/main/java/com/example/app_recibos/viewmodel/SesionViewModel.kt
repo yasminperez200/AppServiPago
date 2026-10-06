@@ -1,23 +1,17 @@
 package com.example.app_recibos.viewmodel
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.app_recibos.data.NubeRepositorio
-import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
 
 /**
  * ViewModel que guarda el estado de la sesión del usuario (nombre, email,
  * teléfono, método de pago). Sobrevive a los cambios de configuración
- * y ahora también sincroniza los cambios con Firebase Firestore.
+ * (por ejemplo, rotar la pantalla) mientras se navega entre Inicio,
+ * Mis Servicios, Pagos, Ajustes y Perfil.
  */
-class SesionViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val context = application
-
+class SesionViewModel : ViewModel() {
     var nombreUsuario by mutableStateOf("Sofia Daza")
         private set
     var emailUsuario by mutableStateOf("sofia.daza@unicauca.edu.co")
@@ -30,17 +24,5 @@ class SesionViewModel(application: Application) : AndroidViewModel(application) 
     fun actualizarPerfil(nombre: String, email: String) {
         nombreUsuario = nombre
         emailUsuario = email
-
-        // Sincronizar los datos actualizados a Firebase Firestore
-        viewModelScope.launch {
-            val datosUsuario = mapOf(
-                "nombre" to nombre,
-                "correo" to email,
-                "telefono" to telefonoUsuario,
-                "actualizadoEn" to System.currentTimeMillis()
-            )
-            // Usamos un ID fijo o el email como identificador del documento del usuario
-            NubeRepositorio.subirUsuario(context, "usuario_principal", datosUsuario)
-        }
     }
 }
